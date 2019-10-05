@@ -17,49 +17,57 @@ void setup() {
   pinMode(zumb, OUTPUT);
 }
 
-void loop() {
-  int cm = senial(TRIGG, ECHO);
-  Serial.print("Distancia: ");
-  if(cm > 40)
+int cap;
+
+void captura(){
+
+  int cm = ping(TRIGG, ECHO);
+
+  digitalWrite(zumb, LOW );
+  digitalWrite(led, LOW);
+  digitalWrite(led4, LOW);
+  digitalWrite(led3, LOW);
+  digitalWrite(led2, LOW); 
+
+  cap = cm;
+
+  trig();
+}
+
+void trig(){
+
+  if(cap < 10)
   {
-    Serial.println("Retroceda");
+    Serial.println("Distancia mínima para que suene la alarma 10 cm");
+    Serial.println("INTRUSO");
+    digitalWrite(zumb, HIGH);
     digitalWrite(led, LOW);
     digitalWrite(led4, HIGH);
     digitalWrite(led3, LOW);
-    digitalWrite(led2, LOW);
-  }
-  else if(cm > 20){
-
-    Serial.println("Precaución");
+    digitalWrite(led2, LOW);    
+    delay(50);  
     digitalWrite(led, LOW);
-    digitalWrite(led2, HIGH);
     digitalWrite(led4, LOW);
-    digitalWrite(led3, LOW);
-    delay(500);
-    digitalWrite(led, HIGH);
-    digitalWrite(led2,LOW);
-    digitalWrite(led4, LOW);
-    digitalWrite(led3, LOW);
-    delay(500);
-    
-  }else{
-
-    Serial.println("Pare");  
-    digitalWrite(led, LOW);
     digitalWrite(led3, HIGH);
-    digitalWrite(led4, LOW);
     digitalWrite(led2, LOW);
-    digitalWrite(zumb, HIGH);
-  }
-  Serial.println(cm);
-  delay(1000);
-  
-  
+    delay(50);
+    digitalWrite(led, LOW);
+    digitalWrite(led4, LOW);
+    digitalWrite(led3, LOW);
+    digitalWrite(led2, HIGH);
+    delay(50);    
+  }  
   
 }
 
-int senial(int TRIGG, int ECHO) {
-  long duracion, dCm;
+void loop() {
+  
+  captura();
+    
+}
+
+int ping(int TRIGG, int ECHO) {
+  long duration, distanceCm;
   
   digitalWrite(TRIGG, LOW);  
   delayMicroseconds(2);
@@ -67,9 +75,9 @@ int senial(int TRIGG, int ECHO) {
   delayMicroseconds(10);
   digitalWrite(TRIGG, LOW);
   
-  duracion = pulseIn(ECHO, HIGH);  
+  duration = pulseIn(ECHO, HIGH);  
   
-  dCm = duracion * 10 / 292/ 2;   
+  distanceCm = duration * 10 / 292/ 2;   
 
-  return dCm;
+  return distanceCm;
 }
