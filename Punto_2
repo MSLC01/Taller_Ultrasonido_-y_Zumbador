@@ -1,0 +1,67 @@
+const int TRIGG=PA10;
+const int ECHO=PA8;
+const int led3 = PA5;
+const int zumb = PA7;
+ 
+void setup() {
+  Serial.begin(9600);
+  pinMode(TRIGG, OUTPUT);
+  pinMode(ECHO, INPUT);
+  pinMode(led3, OUTPUT);
+  pinMode(zumb, OUTPUT);
+  
+}
+int cont = 0;
+int pas = 0;
+int cap;
+
+void captura(){
+
+  int cm = ping(TRIGG, ECHO);
+  cap = cm;
+  registro();
+}
+
+void registro(){
+
+  digitalWrite(led3, LOW);
+  digitalWrite(zumb, LOW);
+  if(cap < 10)
+  {
+    Serial.println("Pasaje: $5200");
+    digitalWrite(led3, HIGH);
+    digitalWrite(zumb, HIGH);
+    delay(200);
+    digitalWrite(zumb, LOW);
+    cont += 1;
+    Serial.println("Numero de pasajeros:");
+    Serial.println(cont);
+    pas = 5200 * cont;
+    Serial.println("Total pasaje");
+    Serial.println(pas);
+    delay(2000);
+    
+    digitalWrite(led3, LOW);
+  }
+}
+
+void loop() {
+  
+  captura();  
+}
+
+int ping(int TRIGG, int ECHO) {
+  long duracion, distanciaCm;
+  
+  digitalWrite(TRIGG, LOW);  
+  delayMicroseconds(2);
+  digitalWrite(TRIGG, HIGH);  
+  delayMicroseconds(10);
+  digitalWrite(TRIGG, LOW);
+  
+  duracion = pulseIn(ECHO, HIGH);  
+  
+  distanciaCm = duracion * 10 / 292/ 2;   
+
+  return distanciaCm;
+}
