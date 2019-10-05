@@ -1,0 +1,61 @@
+//programa diseñado para controlar duchas y evitar el desperdicio de agua.
+
+const int TRIGG=PA10;
+const int ECHO=PA8;
+const int led2 = PA4;
+const int led3 = PA5;
+const int zumb = PA7;
+ 
+void setup() {
+  Serial.begin(9600);
+  pinMode(TRIGG, OUTPUT);
+  pinMode(ECHO, INPUT);
+  pinMode(led2, OUTPUT);
+  pinMode(led3, OUTPUT);
+  pinMode(zumb, OUTPUT);
+  
+}
+int cont = 0;
+boolean x = false;
+void loop() {
+  int cm = ping(TRIGG, ECHO);
+  digitalWrite(zumb, LOW);
+  if(cm < 10)
+  {
+    if(x == false){
+      digitalWrite(led2, LOW);
+      digitalWrite(led3, HIGH);
+      cont++;
+      Serial.print("tiempo ");
+      Serial.println(cont);
+      delay(1000);
+    }
+    if(cont == 30){
+     digitalWrite(led2, HIGH);
+     digitalWrite(led3, LOW);
+     x = true;
+     Serial.println("se acabo el tiempo limite para bañarse, por favor espera 30s");
+     digitalWrite(zumb, HIGH);
+     delay(2000);
+     digitalWrite(zumb, LOW);
+     delay(30000);  
+     cont = 0;
+    }
+  }
+}
+
+int ping(int TRIGG, int ECHO) {
+  long duration, distanceCm;
+  
+  digitalWrite(TRIGG, LOW);  
+  delayMicroseconds(2);
+  digitalWrite(TRIGG, HIGH);  
+  delayMicroseconds(10);
+  digitalWrite(TRIGG, LOW);
+  
+  duration = pulseIn(ECHO, HIGH);  
+  
+  distanceCm = duration * 10 / 292/ 2;   
+
+  return distanceCm;
+}
