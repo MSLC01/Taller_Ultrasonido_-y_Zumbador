@@ -1,0 +1,55 @@
+const int TRIGG=PA10;
+const int ECHO=PA8;
+const int led3 = PA5;
+void setup() {
+  Serial.begin(9600);
+  pinMode(TRIGG, OUTPUT);
+  pinMode(ECHO, INPUT);
+  pinMode(led3, OUTPUT);
+}
+int cont = 0;
+int cap;
+
+void captura(){
+
+  int cm = ping(TRIGG, ECHO);
+  cap = cm;
+  personas();
+}
+
+void personas(){
+
+  if(cap < 20)
+  {
+    cont = cont + 1;
+    digitalWrite(led3, HIGH);
+    delay(800);
+    digitalWrite(led3, LOW);
+    Serial.print(cont);
+    Serial.println(" personas");
+    delay(3000);
+  }
+  
+}
+
+void loop() {
+  
+  captura();
+  
+}
+
+int ping(int TRIGG, int ECHO) {
+  long duracion, distanciaCm;
+  
+  digitalWrite(TRIGG, LOW);  
+  delayMicroseconds(2);
+  digitalWrite(TRIGG, HIGH);  
+  delayMicroseconds(10);
+  digitalWrite(TRIGG, LOW);
+  
+  duracion = pulseIn(ECHO, HIGH);  
+  
+  distanciaCm = duracion * 10 / 292/ 2;   
+
+  return distanciaCm;
+}
